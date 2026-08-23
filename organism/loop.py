@@ -284,6 +284,8 @@ class Organism:
             )
             if intent and (intent.urgency > 0.28 or incoming_frames):
                 utterance = self.produce.realize(intent, self.lexicon)
+                if utterance and utterance == self.last_utterance and not incoming_frames:
+                    utterance = ""
                 speak_now = bool(utterance)
         if speak_now:
             decision.kind = ActionKind.SPEAK
@@ -379,45 +381,60 @@ class Organism:
             cands.append(WorkspaceCandidate(CandidateKind.VISUAL_EVENT, percept.features, min(1.0, boundary * 3), 0.5, 0.4, 0.3, 0.2, 0.2, 0.9, "temporal"))
         return cands
 
+    def _has_active_goal(self, origin: GoalOrigin, action: ActionKind | None) -> bool:
+        return any(
+            g.origin is origin and g.action_kind is action and g.status.value == "active" for g in self.goals.goals.values()
+        )
+
     def _maybe_form_goals(self, focus, motive, pe, unc, incoming) -> None:
-        if incoming and self.meta.state.know_enough < 0.45:
+        if incoming and self.meta.state.know_enough < 0.45 and not self._has_active_goal(GoalOrigin.EPISTEMIC, ActionKind.SPEAK):
             self.goals.form(_fit(self.workspace.last.broadcast, self.cfg.feature_dim), GoalOrigin.EPISTEMIC, 0.7, 0.5, 0.4, 0.2, 20, self.tick, ActionKind.SPEAK, focus.entity_id if focus else None)
-        if motive.novelty > 0.08 and focus and self.tick % 11 == 0:
+        if (motive.novelty > 0.04 or motive.total > 0.08) and focus and not self._has_active_goal(GoalOrigin.EXPLORATORY, ActionKind.INSPECT):
             self.goals.form(focus.representation, GoalOrigin.EXPLORATORY, 0.45 + motive.novelty, 0.4, 0.4, 0.2, 30, self.tick, ActionKind.INSPECT, focus.entity_id)
-        if unc > 0.55 and focus:
+        if unc > 0.55 and focus and not self._has_active_goal(GoalOrigin.EPISTEMIC, ActionKind.EXPERIMENT):
             self.goals.form(focus.representation, GoalOrigin.EPISTEMIC, 0.55, 0.45, 0.35, 0.25, 25, self.tick, ActionKind.EXPERIMENT, focus.entity_id)
-        if self.homeo.state.energy < 0.3:
+        if self.homeo.state.energy < 0.3 and not self._has_active_goal(GoalOrigin.MAINTENANCE, ActionKind.WAIT):
             self.goals.form(self.homeo.state.vector(), GoalOrigin.MAINTENANCE, 0.8, 0.6, 0.7, 0.1, 10, self.tick, ActionKind.WAIT)
-        if self.dialogue.awaiting_response:
+        if self.dialogue.awaiting_response and not self._has_active_goal(GoalOrigin.SOCIAL, ActionKind.SPEAK):
             self.goals.form(self.workspace.last.broadcast, GoalOrigin.SOCIAL, 0.65, 0.4, 0.4, 0.1, 8, self.tick, ActionKind.SPEAK)
-        if pe > 0.25 and focus:
+        if pe > 0.25 and focus and not self._has_active_goal(GoalOrigin.INSTRUMENTAL, ActionKind.APPROACH):
             self.goals.form(focus.representation, GoalOrigin.INSTRUMENTAL, 0.4, 0.35, 0.4, 0.2, 15, self.tick, ActionKind.APPROACH, focus.entity_id)
 
     def _ground_from_caregiver(self, text: str, frame, focus) -> None:
         words = [w for w in text.lower().replace("?", "").split() if w.isalpha()]
         if not words:
             return
-        target = focus.representation if focus is not None else frame.predicate
-        # pairing: each word with currently attended representation (developmental grounding)
+        attended = focus.representation if focus is not None else frame.predicate
         for w in words:
-            kind = "query" if frame.act is SpeechAct.QUERY else "content"
+            kind = "content"
+            bind_vec = attended
             if w in {"red", "blue", "green", "yellow", "big", "small", "bright", "dark"}:
                 kind = "property"
-            elif w in {"ball", "box", "switch", "light", "cube", "door", "agent"}:
+            elif w in {"ball", "box", "switch", "light", "cube", "door", "agent", "block"}:
                 kind = "entity"
             elif w in {"move", "grab", "drop", "look", "push", "open", "toggle", "go", "come"}:
                 kind = "action"
             elif w in {"what", "where", "who", "why", "how"}:
                 kind = "query"
+                bind_vec = self._role_vector("query")
             elif w in {"here", "there", "left", "right", "near", "far", "on", "in"}:
                 kind = "spatial"
+                bind_vec = self._role_vector("spatial")
             elif w in {"me", "you", "i"}:
                 kind = "person"
-                if w in {"me", "i"} and focus is None:
-                    target = self.self_model.identity
-            self.lexicon.bind(w, _fit(target, self.cfg.concept_dim), self.tick, kind)
+                bind_vec = self.self_model.identity
+            elif w in {"this", "that", "is", "a", "the"}:
+                kind = "function"
+                bind_vec = self._role_vector("function")
+            self.lexicon.bind(w, _fit(bind_vec, self.cfg.concept_dim), self.tick, kind)
         if words and not any(m["name"] == "first_grounded_word" for m in self.auto.milestones):
             self.auto.add_milestone(self.tick, "first_grounded_word", words[0])
+
+    def _role_vector(self, role: str) -> Vector:
+        seed = abs(hash(role)) % (2**32)
+        rng = np.random.default_rng(seed)
+        v = rng.normal(size=self.cfg.concept_dim)
+        return v / (np.linalg.norm(v) + 1e-9)
 
     def _learn(self, percept, decision, pe, owned) -> None:
         neu = neuromodulator(pe, owned, self.world_model.last.uncertainty, self.cfg.neuromod_scale)
@@ -464,9 +481,9 @@ class Organism:
         if len(self.world_model.error_trace) > 20:
             early = float(np.mean(self.world_model.error_trace[:10]))
             late = float(np.mean(self.world_model.error_trace[-10:]))
-            improving = max(0.0, early - late)
+            improving = max(0.0, (early - late) / (early + 1e-6))
         self.development.record(
-            change_detected=min(1.0, novelty + 0.3),
+            change_detected=min(1.0, novelty + 0.35 + float(np.tanh(pe * 6.0))),
             prediction_improving=improving,
             body_contingency=body_score,
             agency=agency,
@@ -517,8 +534,18 @@ class Organism:
                 {"id": e.entity_id, "visible": e.visible, "uncertainty": e.uncertainty, "location": e.location[:2].tolist(), "self": e.is_self, "agent": e.is_agent, "permanence": e.permanence_evidence}
                 for e in self.entities.entities.values()
             ],
-            "self": self.self_model.snapshot(),
-            "meta": self.meta.state.__dict__,
+            "self": {
+                "identity": self.self_model.identity.tolist(),
+                "capability": self.self_model.capability,
+                "controllability": self.self_model.controllability,
+                "agency": self.self_model.agency,
+                "continuity": self.self_model.continuity,
+            },
+            "meta": {
+                k: (v if not isinstance(v, list) else v[-20:])
+                for k, v in self.meta.state.__dict__.items()
+                if k != "history"
+            } | {"confidence_trace": self.meta.state.history[-20:]},
             "lexicon_size": len(self.lexicon.entries),
             "lexicon_words": sorted(self.lexicon.entries),
             "episodic_count": self.episodic.count(),
@@ -541,7 +568,10 @@ class Organism:
             "imagination": [
                 {"kind": t.kind.value, "value": t.value, "info": t.info_gain, "pe": t.predicted_error} for t in self.imagination.last
             ],
-            "causal": self.causal.snapshot(),
+            "causal": {
+                hid: {"cause": h.cause_entity, "effect": h.effect_entity, "confidence": h.confidence, "interventions": h.interventions}
+                for hid, h in self.causal.hypotheses.items()
+            },
             "development": self.development.snapshot(),
             "milestones": self.auto.milestones,
             "relationships": self.auto.relationship_weights,

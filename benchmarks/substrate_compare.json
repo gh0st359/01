@@ -1,0 +1,11 @@
+{
+  "task": "nursery visual-feature one-step residual after 80 steps",
+  "seed": 3,
+  "profile": "development",
+  "late_window_mse": {
+    "gru": 0.19785765325594276,
+    "cfc": 0.07219552360680534,
+    "reservoir": 0.1382711360027861
+  },
+  "selection": "GRU remains the integrated cognitive core because it is trainable at three timescales with gated memory. CfC showed a lower short-horizon residual in this sandbox comparison and stays available as an alternative substrate. Residual magnitude is not language performance."
+}

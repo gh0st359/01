@@ -106,15 +106,15 @@ class EntitySystem:
         ent.last_seen_tick = tick
         ent.uncertainty = max(0.05, ent.uncertainty * 0.85)
         if not visible:
-            ent.permanence_evidence += 0.05
+            ent.permanence_evidence = min(1.0, ent.permanence_evidence + 0.05)
         else:
-            ent.permanence_evidence += 0.02
+            ent.permanence_evidence = min(1.0, ent.permanence_evidence + 0.02)
 
     def _occlude(self, ent: Entity, tick: int) -> None:
         ent.visible = False
         ent.uncertainty = min(1.0, ent.uncertainty + 0.08)
         ent.location = ent.location + ent.velocity
-        ent.permanence_evidence += 0.08
+        ent.permanence_evidence = min(1.0, ent.permanence_evidence + 0.08)
         self.stats.occlusions += 1
 
     def _update_self(self, proprio: Vector, tick: int) -> None:

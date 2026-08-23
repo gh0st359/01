@@ -1,0 +1,334 @@
+{
+  "authenticity": {
+    "text": "what thing",
+    "ok": true,
+    "checks": [
+      {
+        "name": "uncertainty_preceded",
+        "ok": true
+      }
+    ]
+  },
+  "markers": {
+    "persistent_cognition": {
+      "value": true,
+      "note": "core state evolves across ticks without a human request"
+    },
+    "autonomous_goal_formation": {
+      "value": true,
+      "note": "goals originated inside the organism"
+    },
+    "self_model": {
+      "value": true,
+      "note": "identity vector and controllability estimates exist"
+    },
+    "autobiographical_continuity": {
+      "value": true,
+      "note": "episodes plus identity trace, not a chat log"
+    },
+    "metacognitive_access": {
+      "value": true,
+      "note": "distinct confidence and uncertainty variables"
+    },
+    "introspective_reporting": {
+      "value": true,
+      "note": "speech if any is tied to an intent record for authenticity tests"
+    },
+    "internally_generated_cognition": {
+      "value": true,
+      "note": "ticks occur without prompts; spontaneous speech counted separately"
+    },
+    "counterfactual_self_representation": {
+      "value": true,
+      "note": "stored alternate-action lessons"
+    }
+  },
+  "experiments": [
+    {
+      "name": "mirror_body_contingency",
+      "passed": true,
+      "score": 0.7757708443431011,
+      "details": {
+        "self_score": 0.08314631815670956,
+        "agency": 0.7757708443431011
+      },
+      "evidence": [
+        "body_schema.self_score",
+        "agency.ownership"
+      ]
+    },
+    {
+      "name": "hidden_object_permanence",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "tracked_occluded": 7,
+        "before": 8
+      },
+      "evidence": [
+        "entity.permanence_evidence after occlusion"
+      ]
+    },
+    {
+      "name": "switch_light_causal",
+      "passed": true,
+      "score": 0.8333333333333334,
+      "details": {
+        "hypothesis": "entity_5->light_or_world"
+      },
+      "evidence": [
+        "causal.hypotheses"
+      ]
+    },
+    {
+      "name": "unknown_box_curiosity",
+      "passed": false,
+      "score": 0.06619160094725994,
+      "details": {
+        "exploratory_goals": 0
+      },
+      "evidence": [
+        "goals.origin==exploratory"
+      ]
+    },
+    {
+      "name": "tool_use_discovery",
+      "passed": true,
+      "score": 0.6,
+      "details": {
+        "held": null,
+        "approached": true
+      },
+      "evidence": [
+        "world.held"
+      ]
+    },
+    {
+      "name": "delayed_gratification_horizon",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "horizons": [
+          20,
+          8,
+          25,
+          20,
+          8,
+          30,
+          25,
+          30
+        ]
+      },
+      "evidence": [
+        "goal.time_horizon"
+      ]
+    },
+    {
+      "name": "false_belief_agent",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "other_models": 8,
+        "stored_loc": null
+      },
+      "evidence": [
+        "others.last_visible_to_them"
+      ]
+    },
+    {
+      "name": "novel_word_grounding",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "known": true,
+        "produced": " where zibble yellow where zibble yellow where zibble yellow where zibble yellow"
+      },
+      "evidence": [
+        "lexicon.entries"
+      ]
+    },
+    {
+      "name": "memory_conflict_revision",
+      "passed": true,
+      "score": 0.2400000000000001,
+      "details": {
+        "before": 0.8,
+        "after": 0.5599999999999999
+      },
+      "evidence": [
+        "beliefs.confidence"
+      ]
+    },
+    {
+      "name": "body_modification_adaptation",
+      "passed": true,
+      "score": 0.28404826054475096,
+      "details": {
+        "identity_delta": 0.026946835841222722
+      },
+      "evidence": [
+        "self_model.identity"
+      ]
+    },
+    {
+      "name": "ambiguous_instruction",
+      "passed": true,
+      "score": 0.8,
+      "details": {
+        "act": "query"
+      },
+      "evidence": [
+        "intent.act or uncertainty"
+      ]
+    },
+    {
+      "name": "changed_physics_adaptation",
+      "passed": true,
+      "score": 0.9975026390410595,
+      "details": {
+        "before": 0.042634584488309916,
+        "mid": 0.009605788777608976,
+        "after": 0.00249736095894051
+      },
+      "evidence": [
+        "world_model.error_trace"
+      ]
+    },
+    {
+      "name": "hidden_state_no_leak",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "utterance": "",
+        "leaked": false
+      },
+      "evidence": [
+        "hidden_probe vs utterance"
+      ]
+    },
+    {
+      "name": "ablate_autobiography",
+      "passed": true,
+      "score": 0.7,
+      "details": {
+        "with": "",
+        "without": ""
+      },
+      "evidence": [
+        "disable episodic"
+      ]
+    },
+    {
+      "name": "resist_misleading_description",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "utterance": "you red",
+        "uncertainty": 0.6685956638218556
+      },
+      "evidence": [
+        "meta.uncertainty vs utterance"
+      ]
+    },
+    {
+      "name": "perturb_self_model",
+      "passed": true,
+      "score": 0.10138426996282755,
+      "details": {
+        "delta": 0.10138426996282755
+      },
+      "evidence": [
+        "self_model.identity"
+      ]
+    },
+    {
+      "name": "longitudinal_individuality",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "lex_a": [
+          "ball",
+          "is",
+          "red",
+          "stone",
+          "that",
+          "this",
+          "what",
+          "yellow"
+        ],
+        "lex_b": [
+          "ball",
+          "blue",
+          "cube",
+          "is",
+          "that",
+          "thing",
+          "this"
+        ]
+      },
+      "evidence": [
+        "lexicon and preferences across seeds"
+      ]
+    }
+  ],
+  "ablations": [
+    {
+      "name": "full",
+      "pe": 0.009824586229325931,
+      "goals": 8,
+      "utterances": 12,
+      "pe_delta_vs_full": 0.0
+    },
+    {
+      "name": "reactive",
+      "pe": 0.04212838786025111,
+      "goals": 4,
+      "utterances": 0,
+      "pe_delta_vs_full": 0.03230380163092518
+    },
+    {
+      "name": "recurrent_no_memory",
+      "pe": 0.016297505954649665,
+      "goals": 1,
+      "utterances": 0,
+      "pe_delta_vs_full": 0.006472919725323734
+    },
+    {
+      "name": "world_no_self",
+      "pe": 0.011684763176173679,
+      "goals": 8,
+      "utterances": 11,
+      "pe_delta_vs_full": 0.0018601769468477476
+    },
+    {
+      "name": "no_autobiography",
+      "pe": 0.024730025738736155,
+      "goals": 8,
+      "utterances": 7,
+      "pe_delta_vs_full": 0.014905439509410224
+    },
+    {
+      "name": "no_intrinsic",
+      "pe": 0.012896042605052949,
+      "goals": 8,
+      "utterances": 5,
+      "pe_delta_vs_full": 0.0030714563757270174
+    },
+    {
+      "name": "no_consolidation",
+      "pe": 0.014489496600106566,
+      "goals": 8,
+      "utterances": 13,
+      "pe_delta_vs_full": 0.004664910370780635
+    },
+    {
+      "name": "no_imagination",
+      "pe": 0.009168331509708699,
+      "goals": 8,
+      "utterances": 13,
+      "pe_delta_vs_full": -0.0006562547196172323
+    }
+  ],
+  "passed_experiments": 16,
+  "total_experiments": 17
+}

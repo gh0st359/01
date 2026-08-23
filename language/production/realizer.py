@@ -54,12 +54,13 @@ class LanguageProduction:
         act_word = self._act_word(frame.act, lexicon)
         if act_word:
             words.append(act_word)
-        pred_hits = lexicon.nearest(frame.predicate, k=2)
+        content_kinds = ["entity", "property", "action", "content", "person"]
+        pred_hits = lexicon.nearest(frame.predicate, k=2, kinds=content_kinds)
         for w, score in pred_hits:
             if w not in words and score > 0.22:
                 words.append(w)
         for key, vec in frame.roles.items():
-            hits = lexicon.nearest(vec, k=1)
+            hits = lexicon.nearest(vec, k=1, kinds=content_kinds)
             for w, score in hits:
                 if w not in words and score > 0.25:
                     words.append(w)

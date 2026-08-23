@@ -44,10 +44,14 @@ class Lexicon:
             del self.entries[rare.word]
         return entry
 
-    def nearest(self, concept: Vector, k: int = 3) -> list[tuple[str, float]]:
+    def nearest(self, concept: Vector, k: int = 3, kinds: list[str] | None = None) -> list[tuple[str, float]]:
         if not self.entries:
             return []
-        scored = [(w, cosine(e.vector, concept)) for w, e in self.entries.items()]
+        scored = []
+        for w, e in self.entries.items():
+            if kinds is not None and e.kind not in kinds:
+                continue
+            scored.append((w, cosine(e.vector, concept)))
         scored.sort(key=lambda x: x[1], reverse=True)
         return [(w, s) for w, s in scored[:k] if s > 0.15]
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sqlite3
+import threading
 from pathlib import Path
 
 import numpy as np
@@ -19,7 +20,9 @@ class EpisodicMemory:
         self.cfg = cfg
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(self.path)
+        self.conn = sqlite3.connect(self.path, check_same_thread=False)
+        self._lock = threading.Lock()
+        self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.execute(
             """CREATE TABLE IF NOT EXISTS episodes (
                 episode_id TEXT PRIMARY KEY,
@@ -43,7 +46,8 @@ class EpisodicMemory:
 
     def encode(self, episode: Episode) -> None:
         blob = orjson.dumps(to_jsonable(self._to_dict(episode)))
-        self.conn.execute(
+        with self._lock:
+            self.conn.execute(
             "INSERT OR REPLACE INTO episodes VALUES (?,?,?,?,?,?,?,?)",
             (
                 episode.episode_id,
@@ -80,7 +84,8 @@ class EpisodicMemory:
         return list(self._cache)
 
     def count(self) -> int:
-        row = self.conn.execute("SELECT COUNT(*) FROM episodes").fetchone()
+        with self._lock:
+            row = self.conn.execute("SELECT COUNT(*) FROM episodes").fetchone()
         return int(row[0]) if row else 0
 
     def close(self) -> None:

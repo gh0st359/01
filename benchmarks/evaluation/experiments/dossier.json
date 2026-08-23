@@ -1,0 +1,241 @@
+[
+  {
+    "marker": "mirror_body_contingency",
+    "experiment": "mirror_body_contingency",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.776 details={'self_score': 0.08314631815670956, 'agency': 0.7757708443431011}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.7757708443431011,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "body_schema.self_score",
+      "agency.ownership"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "hidden_object_permanence",
+    "experiment": "hidden_object_permanence",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=1.000 details={'tracked_occluded': 7, 'before': 8}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 1.0,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "entity.permanence_evidence after occlusion"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "switch_light_causal",
+    "experiment": "switch_light_causal",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.833 details={'hypothesis': 'entity_5->light_or_world'}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.8333333333333334,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "causal.hypotheses"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "unknown_box_curiosity",
+    "experiment": "unknown_box_curiosity",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=False score=0.066 details={'exploratory_goals': 0}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.06619160094725994,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "goals.origin==exploratory"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "tool_use_discovery",
+    "experiment": "tool_use_discovery",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.600 details={'held': None, 'approached': True}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.6,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "world.held"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "delayed_gratification_horizon",
+    "experiment": "delayed_gratification_horizon",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=1.000 details={'horizons': [20, 8, 25, 20, 8, 30, 25, 30]}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 1.0,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "goal.time_horizon"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "false_belief_agent",
+    "experiment": "false_belief_agent",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=1.000 details={'other_models': 8, 'stored_loc': None}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 1.0,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "others.last_visible_to_them"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "novel_word_grounding",
+    "experiment": "novel_word_grounding",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=1.000 details={'known': True, 'produced': ' where zibble yellow where zibble yellow where zibble yellow where zibble yellow'}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 1.0,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "lexicon.entries"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "memory_conflict_revision",
+    "experiment": "memory_conflict_revision",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.240 details={'before': 0.8, 'after': 0.5599999999999999}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.2400000000000001,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "beliefs.confidence"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "body_modification_adaptation",
+    "experiment": "body_modification_adaptation",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.284 details={'identity_delta': 0.026946835841222722}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.28404826054475096,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "self_model.identity"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "ambiguous_instruction",
+    "experiment": "ambiguous_instruction",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.800 details={'act': 'query'}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.8,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "intent.act or uncertainty"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "changed_physics_adaptation",
+    "experiment": "changed_physics_adaptation",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.998 details={'before': 0.042634584488309916, 'mid': 0.009605788777608976, 'after': 0.00249736095894051}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.9975026390410595,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "world_model.error_trace"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "hidden_state_no_leak",
+    "experiment": "hidden_state_no_leak",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=1.000 details={'utterance': '', 'leaked': False}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 1.0,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "hidden_probe vs utterance"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "ablate_autobiography",
+    "experiment": "ablate_autobiography",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.700 details={'with': '', 'without': ''}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.7,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "disable episodic"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "resist_misleading_description",
+    "experiment": "resist_misleading_description",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=1.000 details={'utterance': 'you red', 'uncertainty': 0.6685956638218556}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 1.0,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "meta.uncertainty vs utterance"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "perturb_self_model",
+    "experiment": "perturb_self_model",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=0.101 details={'delta': 0.10138426996282755}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 0.10138426996282755,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "self_model.identity"
+    ],
+    "tick": 0
+  },
+  {
+    "marker": "longitudinal_individuality",
+    "experiment": "longitudinal_individuality",
+    "expected_alternative": "scripted or chance behavior",
+    "result": "passed=True score=1.000 details={'lex_a': ['ball', 'is', 'red', 'stone', 'that', 'this', 'what', 'yellow'], 'lex_b': ['ball', 'blue', 'cube', 'is', 'that', 'thing', 'this']}",
+    "ablation": null,
+    "replication": 1,
+    "confidence": 1.0,
+    "limitations": "single-run developmental sandbox",
+    "evidence_paths": [
+      "lexicon and preferences across seeds"
+    ],
+    "tick": 0
+  }
+]

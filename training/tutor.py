@@ -12,7 +12,7 @@ class CaregiverTutor:
         self.lessons = 0
 
     def maybe_label(self, world: SimulatedWorld, stage: str) -> str | None:
-        if self.rng.random() > 0.35:
+        if self.rng.random() > 0.12:
             return None
         body = world.body()
         nearest = None
@@ -44,7 +44,7 @@ class CaregiverTutor:
         return None
 
     def maybe_query(self) -> str | None:
-        if self.rng.random() > 0.2:
+        if self.rng.random() > 0.06:
             return None
         return ["what is that", "where ball", "what light"][self.rng.integers(0, 3)]
 

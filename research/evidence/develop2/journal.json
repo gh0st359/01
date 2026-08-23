@@ -1,0 +1,12 @@
+[
+  {
+    "tick": 21,
+    "milestone": "stage_stage_3_causality",
+    "evidence": "stage_3_causality"
+  },
+  {
+    "tick": 23,
+    "milestone": "first_grounded_word",
+    "evidence": "blue"
+  }
+]
