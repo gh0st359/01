@@ -2,50 +2,49 @@ from pathlib import Path
 
 from apps.organism_runtime.session import OrganismSession
 from evaluation.authenticity import verify_utterance
-from language.comprehension.parser import LanguageComprehension, tokenize
-from language.grounding.lexicon import Lexicon
-from language.production.intent import IntentFormer
-from language.production.realizer import LanguageProduction
+from language.comprehension.parser import LanguageComprehension, stream_units
 from shared.config import load_config
 from shared.rng import RNG
-from shared.types import CommunicativeIntent, SemanticFrame, SpeechAct
-import numpy as np
+from shared.v2config import load_v2_config
 
 
-def test_tokenizer():
-    assert tokenize("What is that?") == ["what", "is", "that"]
+def test_stream_units_are_boundaries_not_pos_tags():
+    assert stream_units("abc def") == ["abc", "def"]
 
 
-def test_production_uses_lexicon_only():
-    lex = Lexicon(16, 64)
-    lex.bind("red", np.ones(16), 1, "property")
-    lex.bind("ball", np.ones(16) * 0.5, 1, "entity")
-    prod = LanguageProduction()
-    frame = SemanticFrame(SpeechAct.ASSERT, np.ones(16), {}, [], 0.7, 1)
-    intent = CommunicativeIntent(frame, 0.5, None, 1, "h", 0.4, [], 0.2)
-    utt = prod.realize(intent, lex)
-    for w in utt.split():
-        assert lex.known(w)
+def test_parser_does_not_assign_speech_acts_from_cues():
+    cfg = load_config("development", seed=1)
+    parser = LanguageComprehension(cfg, RNG(1))
+    from language.grounding.lexicon import Lexicon
+
+    lex = Lexicon(cfg.concept_dim, 64)
+    frame = parser.parse("what is that", lex, [], 1)
+    assert frame.act.value == "unknown"
 
 
-def test_unknown_lexicon_stays_silent():
-    lex = Lexicon(16, 64)
-    prod = LanguageProduction()
-    frame = SemanticFrame(SpeechAct.INFORM, np.ones(16), {}, [], 0.7, 1)
-    intent = CommunicativeIntent(frame, 0.5, None, 1, "h", 0.4, [], 0.2)
-    assert prod.realize(intent, lex) == ""
-
-
-def test_grounding_from_interaction(tmp_path: Path):
-    cfg = load_config("development", seed=9)
+def test_v2_grounding_is_stream_not_word_class(tmp_path: Path):
+    cfg = load_v2_config("ci", seed=9)
     session = OrganismSession(cfg, tmp_path)
-    session.human_say("tutor", "this red ball")
-    for _ in range(6):
+    session.human_say("tutor", "disk")
+    for _ in range(3):
         session.step()
-    assert session.organism.lexicon.known("red") or session.organism.lexicon.known("ball") or session.organism.lexicon.known("this")
+    assert session.organism.human_events >= 1
+    assert any(m["name"] == "first_grounded_stream" for m in session.organism.milestones)
     session.close()
 
 
 def test_authenticity_requires_intent():
     r = verify_utterance("uncertain", None, {})
     assert r["ok"] is False
+
+
+def test_no_cue_dictionaries_remain_in_language_runtime():
+    root = Path(__file__).resolve().parents[1]
+    banned = ("_QUERY_CUES", "_REQUEST_CUES", "_LABEL_CUES", "QUERY_WORDS", "REQUEST_WORDS", "COLOR_WORDS", "OBJECT_WORDS")
+    hits = []
+    for path in (root / "language").rglob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        for token in banned:
+            if token in text:
+                hits.append((str(path), token))
+    assert hits == [], hits
