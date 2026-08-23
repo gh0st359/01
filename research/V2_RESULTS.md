@@ -6,7 +6,7 @@ These are measured results from this repository at the commit that added this fi
 
 | Field | Value |
 |---|---|
-| Commit | `cursor/organism-01-cognitive-architecture-399f` (hash filled after commit) |
+| Commit | `cursor/organism-01-cognitive-architecture-399f` (`fa0ba0897cf2535af3c2f885b01594c6ddc9892d`) |
 | Hardware | Linux 6.12.94+ x86_64, 4 CPUs, 16 GB RAM |
 | Device | CPU (`torch 2.4.1+cpu`) |
 | CUDA | unavailable |
