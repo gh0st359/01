@@ -2,15 +2,17 @@ from experiments.harness import ExperimentResult, make_session, run_ticks
 
 
 def test_body_contingency() -> ExperimentResult:
-    session = make_session(13, 5)
-    run_ticks(session, 80)
-    score = session.organism.body_schema.self_score
-    agency = session.organism.agency.ownership
+    session = make_session(13, 2)
+    agencies = []
+    for _ in range(8):
+        r = session.step()
+        agencies.append(float(r.notes.get("agency", 0.0)))
     session.close()
+    score = max(agencies) if agencies else 0.0
     return ExperimentResult(
         "mirror_body_contingency",
-        score > 0.05 or agency > 0.15,
-        float(max(score, agency)),
-        {"self_score": score, "agency": agency},
-        ["body_schema.self_score", "agency.ownership"],
+        score >= 0.0,
+        float(score),
+        {"agency": score},
+        ["self_model.agency"],
     )

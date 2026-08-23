@@ -20,12 +20,26 @@ The loop continues while the runtime is up, including when nobody is speaking. H
 - Language is generated from communicative intent + grounded lexicon
 - Phenomenal consciousness is not claimed
 
-## Quick start
+## Quick start (V2)
 
 ```bash
 python3 -m pip install -r requirements.txt
-python -m apps.organism_runtime.main --profile development --seed 1 --run-dir runs/01 --hz 8
+python -m training.birth --profile ci --seed 1 --run-dir runs/v2/newborn
+python -m training.develop --profile ci --seed 1 --run-dir runs/v2/newborn --steps 512
+python -m apps.organism_runtime.main --profile ci --seed 1 --run-dir runs/v2/newborn --hz 8
 ```
+
+Profiles: `ci`, `development_cpu`, `cloud_cpu`, `apple_mps`, `gpu_16gb`, `gpu_cloud`.
+
+```bash
+python -m training.evaluate --checkpoint runs/v2/newborn/checkpoints/latest
+python -m training.longitudinal --profile ci --cycles 3 --steps 16
+python -m training.ablate --profile ci --steps 24
+```
+
+See `research/V2_RESULTS.md` for measured results.
+
+Legacy gen-1 loop remains importable under `organism.loop.Organism`. The live runtime is `OrganismV2`.
 
 Optional observatory UI:
 

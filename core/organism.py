@@ -185,20 +185,15 @@ class OrganismV2:
         self.slots = slots.detach()
         obs = slots.reshape(1, -1)
         action = self.last_action
+        nxt, info = self.net.rssm.observe(self.rssm_state, obs, action)
+        pe_t = torch.mean((info["pred_obs"] - obs) ** 2)
+        pred_obs = info["pred_obs"]
+        aux = info["aux"]
+        post_lv = info["post_lv"]
+        wm_loss = info["recon"] + 0.1 * info["kl"]
         if "world_model" in self.disabled:
             nxt = self.rssm_state
-            pe_t = torch.zeros(1, device=self.device)
-            pred_obs = obs
-            aux = torch.zeros(1, 3, device=self.device)
-            post_lv = torch.zeros(1, self.cfg.stoch_dim, device=self.device)
-            wm_loss = torch.zeros((), device=self.device)
-        else:
-            nxt, info = self.net.rssm.observe(self.rssm_state, obs, action)
-            pe_t = torch.mean((info["pred_obs"] - obs) ** 2)
-            pred_obs = info["pred_obs"]
-            aux = info["aux"]
-            post_lv = info["post_lv"]
-            wm_loss = info["recon"] + 0.1 * info["kl"]
+            wm_loss = wm_loss.detach() * 0.0
         self.rssm_state = RSSMState(h=nxt.h.detach(), z=nxt.z.detach())
         latent = nxt.flatten()
         pe = float(pe_t.detach().cpu())

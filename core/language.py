@@ -97,4 +97,5 @@ class LanguageOrgan(nn.Module):
         return torch.stack(logits, dim=1), torch.stack(ids, dim=1)
 
     def loss(self, logits: Tensor, target: Tensor) -> Tensor:
-        return nn.functional.cross_entropy(logits.reshape(-1, CODEPOINTS), target.reshape(-1), ignore_index=0)
+        # Teach padding-as-stop (id 0). Ignoring 0 made the articulator fill the window.
+        return nn.functional.cross_entropy(logits.reshape(-1, CODEPOINTS), target.reshape(-1))

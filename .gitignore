@@ -28,3 +28,4 @@ checkpoints/
 npm-debug.log*
 .turbo/
 .cache/
+research/evidence/v2/eval/tmp/ckpt_eval/weights.pt
