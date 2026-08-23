@@ -1,0 +1,111 @@
+{
+  "passed_experiments": 16,
+  "total_experiments": 17,
+  "authenticity": {
+    "text": "what thing",
+    "ok": true,
+    "checks": [
+      {
+        "name": "uncertainty_preceded",
+        "ok": true
+      }
+    ]
+  },
+  "markers": {
+    "persistent_cognition": true,
+    "autonomous_goal_formation": true,
+    "self_model": true,
+    "autobiographical_continuity": true,
+    "metacognitive_access": true,
+    "introspective_reporting": true,
+    "internally_generated_cognition": true,
+    "counterfactual_self_representation": true
+  },
+  "experiments": [
+    {
+      "name": "mirror_body_contingency",
+      "passed": true,
+      "score": 0.7757708443431011
+    },
+    {
+      "name": "hidden_object_permanence",
+      "passed": true,
+      "score": 1.0
+    },
+    {
+      "name": "switch_light_causal",
+      "passed": true,
+      "score": 0.8333333333333334
+    },
+    {
+      "name": "unknown_box_curiosity",
+      "passed": false,
+      "score": 0.06619160094725994
+    },
+    {
+      "name": "tool_use_discovery",
+      "passed": true,
+      "score": 0.6
+    },
+    {
+      "name": "delayed_gratification_horizon",
+      "passed": true,
+      "score": 1.0
+    },
+    {
+      "name": "false_belief_agent",
+      "passed": true,
+      "score": 1.0
+    },
+    {
+      "name": "novel_word_grounding",
+      "passed": true,
+      "score": 1.0
+    },
+    {
+      "name": "memory_conflict_revision",
+      "passed": true,
+      "score": 0.2400000000000001
+    },
+    {
+      "name": "body_modification_adaptation",
+      "passed": true,
+      "score": 0.28404826054475096
+    },
+    {
+      "name": "ambiguous_instruction",
+      "passed": true,
+      "score": 0.8
+    },
+    {
+      "name": "changed_physics_adaptation",
+      "passed": true,
+      "score": 0.9975026390410595
+    },
+    {
+      "name": "hidden_state_no_leak",
+      "passed": true,
+      "score": 1.0
+    },
+    {
+      "name": "ablate_autobiography",
+      "passed": true,
+      "score": 0.7
+    },
+    {
+      "name": "resist_misleading_description",
+      "passed": true,
+      "score": 1.0
+    },
+    {
+      "name": "perturb_self_model",
+      "passed": true,
+      "score": 0.10138426996282755
+    },
+    {
+      "name": "longitudinal_individuality",
+      "passed": true,
+      "score": 1.0
+    }
+  ]
+}

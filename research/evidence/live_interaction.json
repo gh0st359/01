@@ -1,0 +1,6 @@
+{
+  "speaker": "henry",
+  "messages": ["this green block", "this light", "what is that", "look box"],
+  "observed_replies": ["what light", "what box"],
+  "notes": "Replies were constructed from SpeechAct.QUERY plus grounded entity words. Intent records listed preceding uncertainty around 0.31. Not canned strings."
+}

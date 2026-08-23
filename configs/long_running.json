@@ -1,0 +1,5 @@
+{
+  "profile": "long_running",
+  "seed": 1,
+  "checkpoint_every": 200
+}

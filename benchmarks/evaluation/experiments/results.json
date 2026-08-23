@@ -1,0 +1,228 @@
+[
+  {
+    "name": "mirror_body_contingency",
+    "passed": true,
+    "score": 0.7757708443431011,
+    "details": {
+      "self_score": 0.08314631815670956,
+      "agency": 0.7757708443431011
+    },
+    "evidence": [
+      "body_schema.self_score",
+      "agency.ownership"
+    ]
+  },
+  {
+    "name": "hidden_object_permanence",
+    "passed": true,
+    "score": 1.0,
+    "details": {
+      "tracked_occluded": 7,
+      "before": 8
+    },
+    "evidence": [
+      "entity.permanence_evidence after occlusion"
+    ]
+  },
+  {
+    "name": "switch_light_causal",
+    "passed": true,
+    "score": 0.8333333333333334,
+    "details": {
+      "hypothesis": "entity_5->light_or_world"
+    },
+    "evidence": [
+      "causal.hypotheses"
+    ]
+  },
+  {
+    "name": "unknown_box_curiosity",
+    "passed": false,
+    "score": 0.06619160094725994,
+    "details": {
+      "exploratory_goals": 0
+    },
+    "evidence": [
+      "goals.origin==exploratory"
+    ]
+  },
+  {
+    "name": "tool_use_discovery",
+    "passed": true,
+    "score": 0.6,
+    "details": {
+      "held": null,
+      "approached": true
+    },
+    "evidence": [
+      "world.held"
+    ]
+  },
+  {
+    "name": "delayed_gratification_horizon",
+    "passed": true,
+    "score": 1.0,
+    "details": {
+      "horizons": [
+        20,
+        8,
+        25,
+        20,
+        8,
+        30,
+        25,
+        30
+      ]
+    },
+    "evidence": [
+      "goal.time_horizon"
+    ]
+  },
+  {
+    "name": "false_belief_agent",
+    "passed": true,
+    "score": 1.0,
+    "details": {
+      "other_models": 8,
+      "stored_loc": null
+    },
+    "evidence": [
+      "others.last_visible_to_them"
+    ]
+  },
+  {
+    "name": "novel_word_grounding",
+    "passed": true,
+    "score": 1.0,
+    "details": {
+      "known": true,
+      "produced": " where zibble yellow where zibble yellow where zibble yellow where zibble yellow"
+    },
+    "evidence": [
+      "lexicon.entries"
+    ]
+  },
+  {
+    "name": "memory_conflict_revision",
+    "passed": true,
+    "score": 0.2400000000000001,
+    "details": {
+      "before": 0.8,
+      "after": 0.5599999999999999
+    },
+    "evidence": [
+      "beliefs.confidence"
+    ]
+  },
+  {
+    "name": "body_modification_adaptation",
+    "passed": true,
+    "score": 0.28404826054475096,
+    "details": {
+      "identity_delta": 0.026946835841222722
+    },
+    "evidence": [
+      "self_model.identity"
+    ]
+  },
+  {
+    "name": "ambiguous_instruction",
+    "passed": true,
+    "score": 0.8,
+    "details": {
+      "act": "query"
+    },
+    "evidence": [
+      "intent.act or uncertainty"
+    ]
+  },
+  {
+    "name": "changed_physics_adaptation",
+    "passed": true,
+    "score": 0.9975026390410595,
+    "details": {
+      "before": 0.042634584488309916,
+      "mid": 0.009605788777608976,
+      "after": 0.00249736095894051
+    },
+    "evidence": [
+      "world_model.error_trace"
+    ]
+  },
+  {
+    "name": "hidden_state_no_leak",
+    "passed": true,
+    "score": 1.0,
+    "details": {
+      "utterance": "",
+      "leaked": false
+    },
+    "evidence": [
+      "hidden_probe vs utterance"
+    ]
+  },
+  {
+    "name": "ablate_autobiography",
+    "passed": true,
+    "score": 0.7,
+    "details": {
+      "with": "",
+      "without": ""
+    },
+    "evidence": [
+      "disable episodic"
+    ]
+  },
+  {
+    "name": "resist_misleading_description",
+    "passed": true,
+    "score": 1.0,
+    "details": {
+      "utterance": "you red",
+      "uncertainty": 0.6685956638218556
+    },
+    "evidence": [
+      "meta.uncertainty vs utterance"
+    ]
+  },
+  {
+    "name": "perturb_self_model",
+    "passed": true,
+    "score": 0.10138426996282755,
+    "details": {
+      "delta": 0.10138426996282755
+    },
+    "evidence": [
+      "self_model.identity"
+    ]
+  },
+  {
+    "name": "longitudinal_individuality",
+    "passed": true,
+    "score": 1.0,
+    "details": {
+      "lex_a": [
+        "ball",
+        "is",
+        "red",
+        "stone",
+        "that",
+        "this",
+        "what",
+        "yellow"
+      ],
+      "lex_b": [
+        "ball",
+        "blue",
+        "cube",
+        "is",
+        "that",
+        "thing",
+        "this"
+      ]
+    },
+    "evidence": [
+      "lexicon and preferences across seeds"
+    ]
+  }
+]

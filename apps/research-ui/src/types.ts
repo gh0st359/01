@@ -1,0 +1,47 @@
+export type OrganismState = {
+  tick: number;
+  time: number;
+  name: string;
+  lineage: string;
+  mode: string;
+  stage: string;
+  prediction_error: number;
+  uncertainty: number;
+  workspace: {
+    kinds: string[];
+    scores: number[];
+    ignition: number;
+    broadcast: number[];
+    sources: string[];
+  };
+  motivation: Record<string, number>;
+  intrinsic: { total: number; progress: number; novelty: number; weights: Record<string, number> };
+  goals: { id: string; origin: string; priority: number; status: string; action: string | null }[];
+  entities: { id: string; visible: boolean; uncertainty: number; location: number[]; self: boolean; agent: boolean; permanence: number }[];
+  self: { identity: number[]; capability: number; controllability: number; agency: number; continuity: number };
+  meta: Record<string, number>;
+  lexicon_size: number;
+  lexicon_words: string[];
+  episodic_count: number;
+  semantic_count: number;
+  beliefs: { id: string; prop: string; conf: number; contra: number }[];
+  last_utterance: string;
+  last_intent: { act: string; urgency: number; uncertainty: number; retrievals: string[]; pe: number } | null;
+  dialogue: { partner: string | null; turns: { tick: number; speaker: string; text: string; act: string | null }[] };
+  imagination: { kind: string; value: number; info: number; pe: number }[];
+  causal: Record<string, { cause: string; effect: string; confidence: number }>;
+  development: { stage: string; metrics: Record<string, number>; history: { tick: number; from: string; to: string }[] };
+  milestones: { tick: number; name: string; evidence: string }[];
+  relationships: Record<string, number>;
+  preferences: Record<string, number>;
+  spontaneous_utterances: number;
+  attention: string | null;
+  working_memory: { source: string; act: number; entity: string | null }[];
+  core_norm: number;
+  world?: {
+    width: number;
+    height: number;
+    objects: { id: string; kind: string; x: number; y: number; r: number; color: number[]; hidden: boolean; light: number }[];
+  };
+  light?: number;
+};
