@@ -92,8 +92,11 @@ def load_checkpoint_v2(org: OrganismV2, path: str | Path) -> OrganismV2:
     if int(meta.get("schema", 1)) > SCHEMA:
         raise ValueError("checkpoint schema newer than runtime")
     blob = torch.load(path / "weights.pt", map_location=org.device, weights_only=False)
-    org.net.load_state_dict(blob["net"])
-    org.opt.load_state_dict(blob["opt"])
+    org.net.load_state_dict(blob["net"], strict=False)
+    try:
+        org.opt.load_state_dict(blob["opt"])
+    except (ValueError, RuntimeError):
+        pass
     org.rssm_state.h = blob["rssm_h"].to(org.device)
     org.rssm_state.z = blob["rssm_z"].to(org.device)
     for k, v in blob["core"].items():

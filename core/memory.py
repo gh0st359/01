@@ -53,12 +53,15 @@ class SemanticInducer(nn.Module):
         self.n_concepts = n_concepts
         self.cluster = nn.Linear(dim, n_concepts)
         self.prop = nn.Linear(dim, dim)
+        # Learned codes stay distinct even when episode cores collapse.
+        self.codebook = nn.Parameter(torch.randn(n_concepts, dim) * 0.35)
 
     def forward(self, episodes: Tensor) -> tuple[Tensor, Tensor]:
         logits = self.cluster(episodes)
         assign = torch.softmax(logits, dim=-1)
-        concepts = assign.transpose(0, 1) @ self.prop(episodes)
-        concepts = concepts / (assign.sum(0).unsqueeze(-1) + 1e-6)
+        residual = assign.transpose(0, 1) @ self.prop(episodes)
+        residual = residual / (assign.sum(0).unsqueeze(-1) + 1e-6)
+        concepts = self.codebook + 0.25 * residual
         return assign, concepts
 
 

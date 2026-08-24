@@ -42,6 +42,9 @@ def bench_self_invert(seeds: list[int], train_steps: int) -> dict:
     for s in seeds:
         org = train_brief(s, train_steps)
         world = ProceduralBatch(1, org.cfg.max_objects, org.cfg.vision_hw, s + 3)
+        for _ in range(24):
+            r = org.tick_once(world.observation(0).sensors)
+            world.step([r.motor])
         base = []
         for _ in range(12):
             r = org.tick_once(world.observation(0).sensors)

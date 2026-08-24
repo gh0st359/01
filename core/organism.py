@@ -731,7 +731,10 @@ class OrganismV2:
         sim = cn @ cn.T
         off = sim - torch.eye(sim.size(0), device=sim.device)
         collapse = torch.relu(off - 0.25).pow(2).mean()
-        loss = mse(recon, cores) - 0.05 * diversity + 0.25 * collapse
+        codes = self.net.semantic.codebook
+        cdn = codes / (codes.norm(dim=-1, keepdim=True) + 1e-6)
+        code_off = cdn @ cdn.T - torch.eye(cdn.size(0), device=cdn.device)
+        loss = mse(recon, cores) - 0.08 * diversity + 0.35 * collapse + 0.2 * code_off.pow(2).mean()
         self.concepts = concepts.detach()
         self.concept_collapse = float(off.abs().mean().detach().cpu())
         self.memory.semantic_bank = [concepts.detach().cpu().numpy()]
