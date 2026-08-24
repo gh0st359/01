@@ -35,7 +35,7 @@ Profiles: `ci`, `development_cpu`, `cloud_cpu`, `apple_mps`, `gpu_16gb`, `gpu_cl
 
 The V2 operational suite (`training.evaluate`) still runs. Do not cite it as evidence that an organ learned. Use `training.v3_bench` and `research/V3_RESULTS.md`.
 
-See `research/V2_RESULTS.md` for the previous generation.
+See `research/V3_RESULTS.md` for measured V3 results and `research/V2_RESULTS.md` for the previous generation.
 
 Legacy gen-1 loop remains importable under `organism.loop.Organism`. The live runtime is `OrganismV2`.
 
