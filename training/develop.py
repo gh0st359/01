@@ -32,19 +32,14 @@ STAGES = [
 
 
 def caregiver_stream(world: ProceduralBatch, rng_tick: int) -> str | None:
-    """Environment agent emits a character stream co-present with the scene.
+    """Joint-attention partner: retarget halo, emit a bound appearance code.
 
-    The organism does not receive word-class labels. Streams are just bytes.
+    The organism is not trained to reproduce this string.
     """
     if rng_tick % 11 != 0:
         return None
-    view = world.public_view(0)
-    visible = [o for o in view["objects"] if not o["hidden"] and o["kind"] != "agent"]
-    if not visible:
-        return None
-    obj = visible[rng_tick % len(visible)]
-    # Caregiver speech is an environmental event. Meanings are not injected as classes.
-    return f"{obj['kind']}"
+    world.retarget(0)
+    return world.partner_stream(0)
 
 
 def develop(profile: str, seed: int, run_dir: Path, steps: int, restore: Path | None) -> dict:
@@ -64,6 +59,10 @@ def develop(profile: str, seed: int, run_dir: Path, steps: int, restore: Path | 
         stream = caregiver_stream(world, org.tick + 1)
         if stream:
             org.ingest_speech("caregiver", stream)
+        # Caregiver sometimes brings the body to the switch so interact can split hypotheses.
+        if t % 37 == 0 and world.n > 2:
+            jitter = world.rng.normal(0.0, 0.12, size=2)
+            world.state.pos[0, 0] = world.state.pos[0, 2] + jitter
         obs = world.observation(0)
         result = org.tick_once(obs.sensors)
         motors = [result.motor] * world.batch
@@ -109,6 +108,13 @@ def develop(profile: str, seed: int, run_dir: Path, steps: int, restore: Path | 
         "utterances": [d for d in org.dialogue if d["speaker"] == "01"][-20:],
         "curves": curves,
         "milestones": org.milestones,
+        "organs_last": org.organ_trace[-1] if org.organ_trace else {},
+        "concepts": 0 if org.concepts is None else int(org.concepts.size(0)),
+        "concept_collapse": org.concept_collapse,
+        "ref_acc_mean": float(sum(org.ref_acc_trace[-64:]) / max(1, len(org.ref_acc_trace[-64:]))),
+        "probe_rate": float(sum(org.probe_choices[-64:]) / max(1, len(org.probe_choices[-64:]))),
+        "self_pe_last64": float(sum(org.self_pe_trace[-64:]) / max(1, len(org.self_pe_trace[-64:]))),
+        "ig_margin_last32": float(sum(org.ig_margin_trace[-32:]) / max(1, len(org.ig_margin_trace[-32:]))),
     }
     write_json(run_dir / "develop.json", report)
     (run_dir / "curves.jsonl").write_text("\n".join(json.dumps({"i": i, "pe": p}) for i, p in enumerate(curves["pe"])), encoding="utf-8")
@@ -119,7 +125,7 @@ def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--profile", default="ci")
     p.add_argument("--seed", type=int, default=1)
-    p.add_argument("--run-dir", default="runs/v2/develop")
+    p.add_argument("--run-dir", default="runs/v3/develop")
     p.add_argument("--steps", type=int, default=256)
     p.add_argument("--restore", default="")
     args = p.parse_args(argv)

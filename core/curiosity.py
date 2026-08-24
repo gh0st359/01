@@ -27,6 +27,39 @@ class EpistemicEvaluator(nn.Module):
     def controllability(self, latent: Tensor, action: Tensor) -> Tensor:
         return torch.sigmoid(self.ctrl(torch.cat([latent, action], dim=-1)))
 
+    def outcome_loss(self, latent: Tensor, action: Tensor, next_z: Tensor, intervened: bool) -> Tensor:
+        """hyp_a sees all transitions; hyp_b is observational-only. Probe actions split them."""
+        xa = torch.cat([latent, action], dim=-1)
+        loss = torch.mean((self.hyp_a(xa) - next_z.detach()) ** 2)
+        if not intervened:
+            loss = loss + torch.mean((self.hyp_b(xa) - next_z.detach()) ** 2)
+        return loss
+
+    def candidate_actions(self, cem: Tensor) -> Tensor:
+        """Discrete experiments: wait, move, interact, grasp, CEM. [5, B, A]."""
+        wait = torch.zeros_like(cem)
+        move = cem.clone()
+        move[:, 3] = 0.0
+        interact = cem.clone()
+        interact[:, 3] = 1.0
+        grasp = cem.clone()
+        grasp[:, 2] = 1.0
+        grasp[:, 3] = 0.0
+        return torch.stack([wait, move, interact, grasp, cem], dim=0)
+
+    def pick_experiment(self, latent: Tensor, cem: Tensor, explore: float = 0.12) -> tuple[Tensor, bool, Tensor]:
+        """Choose the action whose predicted outcome splits hyp_a vs hyp_b."""
+        cands = self.candidate_actions(cem)
+        n, b, _a = cands.shape
+        lat = latent.unsqueeze(0).expand(n, *latent.shape).reshape(n * b, -1)
+        ig = self.information_gain(lat, cands.reshape(n * b, -1)).view(n, b)
+        scores = ig.mean(dim=-1)
+        if float(torch.rand((), device=latent.device)) < explore:
+            idx = int(torch.randint(0, n, (1,), device=latent.device))
+        else:
+            idx = int(scores.argmax())
+        return cands[idx], idx == 2, scores
+
     def score_actions(self, latent: Tensor, actions: Tensor) -> Tensor:
         """actions: [N, B, A] → scores [N, B, 1]."""
         n, b, _ = actions.shape
