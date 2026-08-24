@@ -1,9 +1,10 @@
-"""Form communicative intent from cognition — meaning exists before words."""
+"""Communicative intent is a latent state, not a speech-act lookup table."""
 
 from __future__ import annotations
 
-from shared.types import CommunicativeIntent, Goal, GoalOrigin, SemanticFrame, SpeechAct, Vector, WorkspaceContents
 import numpy as np
+
+from shared.types import CommunicativeIntent, Goal, SemanticFrame, SpeechAct, Vector, WorkspaceContents
 
 
 class IntentFormer:
@@ -21,39 +22,19 @@ class IntentFormer:
     ) -> CommunicativeIntent | None:
         if not workspace.winners and goal is None:
             return None
-        urgency = 0.0
-        act = SpeechAct.INFORM
         pred = workspace.broadcast.copy()
         roles: dict[str, Vector] = {}
         refs: list[str] = []
-        if goal is not None and goal.origin is GoalOrigin.EPISTEMIC:
-            act = SpeechAct.QUERY
-            urgency = 0.55 + 0.3 * uncertainty
+        urgency = float(np.tanh(uncertainty + social_drive + (0.3 if goal is not None else 0.0)))
+        if urgency < 0.15:
+            return None
+        if focus_vec is not None:
+            roles["focus"] = focus_vec
+        if goal is not None:
             pred = goal.description_vector
             if goal.target_entity:
                 refs.append(goal.target_entity)
-        elif goal is not None and goal.origin is GoalOrigin.SOCIAL:
-            act = SpeechAct.INFORM
-            urgency = 0.4 + 0.4 * social_drive
-            pred = goal.description_vector
-        elif any(w.kind.value == "language_event" for w in workspace.winners):
-            act = SpeechAct.INFORM
-            urgency = 0.45 + 0.2 * social_drive
-            pred = workspace.broadcast
-        elif uncertainty > 0.65 and social_drive > 0.25:
-            act = SpeechAct.QUERY
-            urgency = 0.5
-        elif prediction_error > 0.35:
-            act = SpeechAct.ASSERT
-            urgency = 0.35
-            roles["unexpected"] = workspace.broadcast
-        else:
-            if social_drive < 0.35 and uncertainty < 0.5:
-                return None
-            urgency = 0.2 * social_drive
-        if focus_vec is not None:
-            roles["focus"] = focus_vec
-        frame = SemanticFrame(act, pred, roles, refs, min(1.0, urgency + 0.2), tick)
+        frame = SemanticFrame(SpeechAct.UNKNOWN, pred, roles, refs, min(1.0, urgency + 0.2), tick)
         return CommunicativeIntent(
             frame=frame,
             urgency=urgency,

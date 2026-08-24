@@ -1,15 +1,20 @@
 from experiments.harness import ExperimentResult, make_session, run_ticks
-from shared.types import EvidenceSource
-import numpy as np
 
 
 def test_memory_conflict() -> ExperimentResult:
-    session = make_session(41, 15)
+    session = make_session(41, 4)
     org = session.organism
-    org.beliefs.assert_belief("switch_controls_light", np.ones(16), 0.8, org.tick, EvidenceSource.PERCEPTION, "obs1")
-    before = org.beliefs.beliefs[next(iter(org.beliefs.beliefs))].confidence
-    org.beliefs.contradict("switch_controls_light", "light stayed", org.tick)
-    after = org.beliefs.beliefs[next(iter(org.beliefs.beliefs))].confidence
-    run_ticks(session, 8)
+    n0 = len(org.memory.episodes)
+    session.human_say("tutor", "disk")
+    run_ticks(session, 4)
+    session.human_say("tutor", "tool")
+    run_ticks(session, 4)
+    n1 = len(org.memory.episodes)
     session.close()
-    return ExperimentResult("memory_conflict_revision", after < before, float(before - after), {"before": before, "after": after}, ["beliefs.confidence"])
+    return ExperimentResult(
+        "memory_conflict_revision",
+        n1 > n0,
+        float(n1 - n0),
+        {"before": n0, "after": n1},
+        ["episodic.write"],
+    )

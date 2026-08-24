@@ -12,9 +12,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from apps.organism_runtime.session import OrganismSession
-from organism.checkpoint import load_checkpoint, save_checkpoint
-from shared.config import load_config
-from shared.hardware import config_for_machine
+from core.checkpoint import load_checkpoint_v2, save_checkpoint_v2
+from shared.v2config import load_v2_config
 
 
 class SayBody(BaseModel):
@@ -53,12 +52,12 @@ def create_app(session: OrganismSession) -> FastAPI:
 
     @app.post("/api/checkpoint")
     def checkpoint() -> dict[str, str]:
-        path = save_checkpoint(session.organism, session.run_dir / "checkpoints" / "manual")
+        path = save_checkpoint_v2(session.organism, session.run_dir / "checkpoints" / "manual")
         return {"path": str(path)}
 
     @app.post("/api/restore")
     def restore() -> dict[str, int]:
-        load_checkpoint(session.organism, session.run_dir / "checkpoints" / "latest")
+        load_checkpoint_v2(session.organism, session.run_dir / "checkpoints" / "latest")
         return {"tick": session.organism.tick}
 
     @app.get("/api/journal")
@@ -103,6 +102,6 @@ def create_app(session: OrganismSession) -> FastAPI:
 
 
 def build_default_session(profile: str | None = None, seed: int = 1, run_dir: str = "runs/01") -> OrganismSession:
-    cfg = load_config(profile, seed=seed) if profile else config_for_machine(seed=seed)
+    cfg = load_v2_config(profile or "development_cpu", seed=seed)
     restore = Path(run_dir) / "checkpoints" / "latest"
     return OrganismSession(cfg, run_dir, restore if restore.exists() else None)

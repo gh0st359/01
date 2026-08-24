@@ -1,0 +1,81 @@
+{
+  "n": 5,
+  "spontaneous": 0,
+  "log": [
+    {
+      "human": "disk",
+      "tick": 8013,
+      "utterance": "switchrrrrrrrrrrrrrrrrrr",
+      "spontaneous": false,
+      "pe": 0.01975182443857193,
+      "intent_urgency": 0.9988449811935425,
+      "prior_uncertainty": 0.9387062191963196,
+      "retrievals": [],
+      "semantic_exists": true
+    },
+    {
+      "human": "what is near",
+      "tick": 8016,
+      "utterance": "containerrrrrrrrrrrrrrrr",
+      "spontaneous": false,
+      "pe": 0.00007083558011800051,
+      "intent_urgency": 0.997683048248291,
+      "prior_uncertainty": 0.9377864003181458,
+      "retrievals": [
+        "8014",
+        "8015",
+        "8013"
+      ],
+      "semantic_exists": true
+    },
+    {
+      "human": "tool",
+      "tick": 8019,
+      "utterance": "toolinerrrrrrrrrrrrrrrrr",
+      "spontaneous": false,
+      "pe": 0.00006430439680116251,
+      "intent_urgency": 0.9991883635520935,
+      "prior_uncertainty": 0.9378487467765808,
+      "retrievals": [
+        "8017",
+        "8014",
+        "8018",
+        "8016"
+      ],
+      "semantic_exists": true
+    },
+    {
+      "human": "look again",
+      "tick": 8022,
+      "utterance": "containerrrrrrrrrrrrrrhr",
+      "spontaneous": false,
+      "pe": 0.00005637310823658481,
+      "intent_urgency": 0.9961655139923096,
+      "prior_uncertainty": 0.9376702308654785,
+      "retrievals": [
+        "8017",
+        "8014",
+        "8018",
+        "8016"
+      ],
+      "semantic_exists": true
+    },
+    {
+      "human": "switch",
+      "tick": 8025,
+      "utterance": "switchrrrrrrrrrrrrrrhher",
+      "spontaneous": false,
+      "pe": 0.00004863736103288829,
+      "intent_urgency": 0.9991051554679871,
+      "prior_uncertainty": 0.9369507431983948,
+      "retrievals": [
+        "8024",
+        "8023",
+        "8017",
+        "8014"
+      ],
+      "semantic_exists": true
+    }
+  ],
+  "tick": 8039
+}

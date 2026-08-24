@@ -1,0 +1,85 @@
+{
+  "baseline": {
+    "disabled": "none",
+    "mean_pe": 0.08332009078003466,
+    "last_pe": 0.03971244394779205,
+    "first_pe": 0.13630138337612152,
+    "spontaneous": 0,
+    "params": 494233
+  },
+  "rows": [
+    {
+      "disabled": "none",
+      "mean_pe": 0.08332009078003466,
+      "last_pe": 0.03971244394779205,
+      "first_pe": 0.13630138337612152,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "world_model",
+      "mean_pe": 0.0,
+      "last_pe": 0.0,
+      "first_pe": 0.0,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "imagination",
+      "mean_pe": 0.07873981609009206,
+      "last_pe": 0.04144082963466644,
+      "first_pe": 0.13630138337612152,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "episodic",
+      "mean_pe": 0.08332009078003466,
+      "last_pe": 0.03971244394779205,
+      "first_pe": 0.13630138337612152,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "language",
+      "mean_pe": 0.08332009078003466,
+      "last_pe": 0.03971244394779205,
+      "first_pe": 0.13630138337612152,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "workspace",
+      "mean_pe": 0.08332009078003466,
+      "last_pe": 0.03971244394779205,
+      "first_pe": 0.13630138337612152,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "core",
+      "mean_pe": 0.08332009078003466,
+      "last_pe": 0.03971244394779205,
+      "first_pe": 0.13630138337612152,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "perception",
+      "mean_pe": 0.023976355732884258,
+      "last_pe": 0.031374916434288025,
+      "first_pe": 0.018751300871372223,
+      "spontaneous": 0,
+      "params": 494233
+    },
+    {
+      "disabled": "consolidation",
+      "mean_pe": 0.08332009078003466,
+      "last_pe": 0.03971244394779205,
+      "first_pe": 0.13630138337612152,
+      "spontaneous": 0,
+      "params": 494233
+    }
+  ],
+  "world_model_hurts": false
+}

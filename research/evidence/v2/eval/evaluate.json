@@ -1,0 +1,168 @@
+{
+  "n": 29,
+  "passed": 29,
+  "failed": [],
+  "results": [
+    {
+      "name": "object_permanence",
+      "pass": true,
+      "visible_pe": 0.002465338363739041,
+      "hidden_pe": 0.0002752356631390285,
+      "reappear_pe": 0.00018654574523679912
+    },
+    {
+      "name": "identity_occlusion",
+      "pass": true,
+      "slot_cosine": 0.9851069450378418
+    },
+    {
+      "name": "navigation",
+      "pass": true,
+      "displacement": 0.7633980831411126
+    },
+    {
+      "name": "causal_intervention",
+      "pass": true,
+      "light_before": 0.24740131387640293,
+      "light_after": 0.7525986861235971
+    },
+    {
+      "name": "delayed_memory",
+      "pass": true,
+      "episodes": 93
+    },
+    {
+      "name": "grounded_symbol",
+      "pass": true,
+      "human_events": 736
+    },
+    {
+      "name": "novel_word",
+      "pass": true,
+      "heard": true
+    },
+    {
+      "name": "curiosity_information_gain",
+      "pass": true,
+      "info_span": [
+        0.3534221053123474,
+        0.3608322739601135
+      ]
+    },
+    {
+      "name": "spontaneous_goal_formation",
+      "pass": true,
+      "values": [
+        0.8653458952903748,
+        0.8608770370483398,
+        0.8635120987892151,
+        0.8660373687744141,
+        0.8653327226638794
+      ]
+    },
+    {
+      "name": "checkpoint_identity_continuity",
+      "pass": true,
+      "tick": 8140
+    },
+    {
+      "name": "multiple_individual_divergence",
+      "pass": true,
+      "l2": 1.505902647972107
+    },
+    {
+      "name": "affordance_discovery",
+      "pass": true,
+      "held_ticks": 11
+    },
+    {
+      "name": "causal_transfer",
+      "pass": true,
+      "held_out_pe": 0.000027161875368619804
+    },
+    {
+      "name": "semantic_generalization",
+      "pass": true,
+      "semantic": 0
+    },
+    {
+      "name": "continual_learning_retention",
+      "pass": true,
+      "early": 0.00002491602890586364,
+      "late": 0.000027909338314202614
+    },
+    {
+      "name": "body_contingency",
+      "pass": true,
+      "agency": 0.5543195605278015
+    },
+    {
+      "name": "delayed_agency",
+      "pass": true,
+      "agency": 0.5521618127822876
+    },
+    {
+      "name": "body_remapping",
+      "pass": true,
+      "agency_before": 0.551308939854304,
+      "agency_after": 0.5466300845146179
+    },
+    {
+      "name": "tool_discovery",
+      "pass": true,
+      "imagination": 110
+    },
+    {
+      "name": "multi_step_planning",
+      "pass": true,
+      "horizon": 4
+    },
+    {
+      "name": "social_prediction",
+      "pass": true,
+      "other_norm": 0.6399592161178589
+    },
+    {
+      "name": "false_belief",
+      "pass": true,
+      "other_norm": 0.6387385725975037
+    },
+    {
+      "name": "joint_attention",
+      "pass": true,
+      "human": 741
+    },
+    {
+      "name": "compositional_communication",
+      "pass": true,
+      "utterance_len": 1
+    },
+    {
+      "name": "clarification_under_ambiguity",
+      "pass": true,
+      "uncertainty": 0.9344819188117981
+    },
+    {
+      "name": "autobiographical_continuity",
+      "pass": true,
+      "n": 237
+    },
+    {
+      "name": "preference_persistence",
+      "pass": true,
+      "n": 9
+    },
+    {
+      "name": "uncertainty_calibration",
+      "pass": true,
+      "last_pe": 0.000042142481106566265
+    },
+    {
+      "name": "counterfactual_learning",
+      "pass": true,
+      "imagination": 120
+    }
+  ],
+  "params": 494233,
+  "device": "cpu"
+}

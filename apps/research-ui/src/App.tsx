@@ -108,7 +108,7 @@ export function App() {
   };
 
   const world = state.world;
-  const tabs = ["memory", "beliefs", "self", "imagination", "development", "metrics"];
+  const tabs = ["memory", "beliefs", "self", "imagination", "language", "development", "metrics"];
 
   const identityHeat = useMemo(() => state.self.identity ?? [], [state.self.identity]);
 
@@ -131,15 +131,19 @@ export function App() {
           <div className="panel chat" style={{ flex: 1 }}>
             <h2>Conversation — environmental events</h2>
             <div className="turns">
-              {(state.dialogue.turns || []).map((t, i) => (
-                <div key={i} className={`turn ${t.speaker === "01" ? "o1" : "human"}`}>
-                  <div className="who">
-                    {t.speaker} · tick {t.tick}
-                    {t.act ? ` · intent ${t.act}` : ""}
+              {(state.dialogue.turns || []).map((t, i) => {
+                const origin = t.act || (t.speaker === "01" ? "organism" : "human");
+                const cls = origin === "spontaneous" ? "spontaneous" : t.speaker === "01" ? "o1" : "human";
+                return (
+                  <div key={i} className={`turn ${cls}`}>
+                    <div className="who">
+                      {t.speaker} · tick {t.tick}
+                      {` · ${origin}`}
+                    </div>
+                    <div>{t.text}</div>
                   </div>
-                  <div>{t.text}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="composer">
               <input
@@ -151,7 +155,7 @@ export function App() {
               <button onClick={say}>send</button>
             </div>
             <p className="note">
-              Utterances are realized from communicative intent. Empty replies mean the lexicon has no grounded words for the current meaning.
+              Human turns are environmental events. Organism turns require a learned communicative state. Spontaneous turns are organism-originated without a human prompt.
             </p>
             {state.last_intent && (
               <p className="note">
@@ -296,6 +300,24 @@ export function App() {
                   </li>
                 ))}
               </ul>
+            )}
+            {tab === "language" && (
+              <div>
+                <p className="note">Semantic intent exists before characters. Vectors are not English thoughts.</p>
+                {state.last_intent && (
+                  <div className="kv">
+                    <span>urgency</span>
+                    <span>{state.last_intent.urgency.toFixed(3)}</span>
+                    <span>prior uncertainty</span>
+                    <span>{state.last_intent.uncertainty.toFixed(3)}</span>
+                    <span>prior PE</span>
+                    <span>{state.last_intent.pe.toFixed(3)}</span>
+                    <span>retrievals</span>
+                    <span>{state.last_intent.retrievals.join(",") || "none"}</span>
+                  </div>
+                )}
+                <Heat values={state.workspace.broadcast} />
+              </div>
             )}
             {tab === "development" && (
               <div>

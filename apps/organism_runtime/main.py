@@ -14,8 +14,7 @@ import uvicorn
 
 from apps.organism_runtime.api import create_app
 from apps.organism_runtime.session import OrganismSession
-from shared.config import load_config
-from shared.hardware import config_for_machine
+from shared.v2config import load_v2_config
 
 
 def cognitive_loop(session: OrganismSession, hz: float, stop: threading.Event) -> None:
@@ -40,7 +39,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--hz", type=float, default=8.0)
     parser.add_argument("--steps", type=int, default=0, help="If >0, run this many steps without serving")
     args = parser.parse_args(argv)
-    cfg = load_config(args.profile, seed=args.seed) if args.profile else config_for_machine(seed=args.seed)
+    cfg = load_v2_config(args.profile or "development_cpu", seed=args.seed)
     restore = Path(args.run_dir) / "checkpoints" / "latest"
     session = OrganismSession(cfg, args.run_dir, restore if restore.exists() else None)
     if args.steps > 0:

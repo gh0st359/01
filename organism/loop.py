@@ -270,7 +270,8 @@ class Organism:
         utterance = ""
         intent = None
         speak_now = False
-        if incoming_frames or (motive.social > 0.15 and self.tick % 17 == 0) or (goal and goal.origin is GoalOrigin.EPISTEMIC):
+        communicative_pressure = float(motive.social) + float(pred.uncertainty) * 0.3 + (0.25 if incoming_frames else 0.0)
+        if incoming_frames or (goal is not None and communicative_pressure > 0.55):
             intent = self.intent_former.form(
                 ws,
                 goal,
@@ -387,54 +388,32 @@ class Organism:
         )
 
     def _maybe_form_goals(self, focus, motive, pe, unc, incoming) -> None:
-        if incoming and self.meta.state.know_enough < 0.45 and not self._has_active_goal(GoalOrigin.EPISTEMIC, ActionKind.SPEAK):
-            self.goals.form(_fit(self.workspace.last.broadcast, self.cfg.feature_dim), GoalOrigin.EPISTEMIC, 0.7, 0.5, 0.4, 0.2, 20, self.tick, ActionKind.SPEAK, focus.entity_id if focus else None)
-        if (motive.novelty > 0.04 or motive.total > 0.08) and focus and not self._has_active_goal(GoalOrigin.EXPLORATORY, ActionKind.INSPECT):
-            self.goals.form(focus.representation, GoalOrigin.EXPLORATORY, 0.45 + motive.novelty, 0.4, 0.4, 0.2, 30, self.tick, ActionKind.INSPECT, focus.entity_id)
-        if unc > 0.55 and focus and not self._has_active_goal(GoalOrigin.EPISTEMIC, ActionKind.EXPERIMENT):
-            self.goals.form(focus.representation, GoalOrigin.EPISTEMIC, 0.55, 0.45, 0.35, 0.25, 25, self.tick, ActionKind.EXPERIMENT, focus.entity_id)
-        if self.homeo.state.energy < 0.3 and not self._has_active_goal(GoalOrigin.MAINTENANCE, ActionKind.WAIT):
-            self.goals.form(self.homeo.state.vector(), GoalOrigin.MAINTENANCE, 0.8, 0.6, 0.7, 0.1, 10, self.tick, ActionKind.WAIT)
-        if self.dialogue.awaiting_response and not self._has_active_goal(GoalOrigin.SOCIAL, ActionKind.SPEAK):
-            self.goals.form(self.workspace.last.broadcast, GoalOrigin.SOCIAL, 0.65, 0.4, 0.4, 0.1, 8, self.tick, ActionKind.SPEAK)
-        if pe > 0.25 and focus and not self._has_active_goal(GoalOrigin.INSTRUMENTAL, ActionKind.APPROACH):
-            self.goals.form(focus.representation, GoalOrigin.INSTRUMENTAL, 0.4, 0.35, 0.4, 0.2, 15, self.tick, ActionKind.APPROACH, focus.entity_id)
+        """Legacy path: propose a latent goal from current drives, not ActionKind tables."""
+        if "goals" in self.disabled:
+            return
+        drive = float(motive.total) + 0.2 * float(unc) + 0.15 * float(pe)
+        if drive < 0.12 and not incoming:
+            return
+        vec = focus.representation if focus is not None else self.workspace.last.broadcast
+        origin = GoalOrigin.EXPLORATORY
+        if incoming:
+            origin = GoalOrigin.SOCIAL
+        elif float(self.homeo.state.energy) < 0.25:
+            origin = GoalOrigin.MAINTENANCE
+        elif unc > 0.5:
+            origin = GoalOrigin.EPISTEMIC
+        if not any(g.origin is origin and g.status.value == "active" for g in self.goals.goals.values()):
+            self.goals.form(_fit(vec, self.cfg.feature_dim), origin, min(0.9, 0.3 + drive), 0.4, 0.4, 0.2, 24, self.tick, None, focus.entity_id if focus else None)
 
     def _ground_from_caregiver(self, text: str, frame, focus) -> None:
-        words = [w for w in text.lower().replace("?", "").split() if w.isalpha()]
-        if not words:
+        units = [u for u in text.split() if u]
+        if not units:
             return
         attended = focus.representation if focus is not None else frame.predicate
-        for w in words:
-            kind = "content"
-            bind_vec = attended
-            if w in {"red", "blue", "green", "yellow", "big", "small", "bright", "dark"}:
-                kind = "property"
-            elif w in {"ball", "box", "switch", "light", "cube", "door", "agent", "block"}:
-                kind = "entity"
-            elif w in {"move", "grab", "drop", "look", "push", "open", "toggle", "go", "come"}:
-                kind = "action"
-            elif w in {"what", "where", "who", "why", "how"}:
-                kind = "query"
-                bind_vec = self._role_vector("query")
-            elif w in {"here", "there", "left", "right", "near", "far", "on", "in"}:
-                kind = "spatial"
-                bind_vec = self._role_vector("spatial")
-            elif w in {"me", "you", "i"}:
-                kind = "person"
-                bind_vec = self.self_model.identity
-            elif w in {"this", "that", "is", "a", "the"}:
-                kind = "function"
-                bind_vec = self._role_vector("function")
-            self.lexicon.bind(w, _fit(bind_vec, self.cfg.concept_dim), self.tick, kind)
-        if words and not any(m["name"] == "first_grounded_word" for m in self.auto.milestones):
-            self.auto.add_milestone(self.tick, "first_grounded_word", words[0])
-
-    def _role_vector(self, role: str) -> Vector:
-        seed = abs(hash(role)) % (2**32)
-        rng = np.random.default_rng(seed)
-        v = rng.normal(size=self.cfg.concept_dim)
-        return v / (np.linalg.norm(v) + 1e-9)
+        for unit in units:
+            self.lexicon.bind(unit, _fit(attended, self.cfg.concept_dim), self.tick, "unknown")
+        if units and not any(m["name"] == "first_grounded_word" for m in self.auto.milestones):
+            self.auto.add_milestone(self.tick, "first_grounded_word", units[0])
 
     def _learn(self, percept, decision, pe, owned) -> None:
         neu = neuromodulator(pe, owned, self.world_model.last.uncertainty, self.cfg.neuromod_scale)

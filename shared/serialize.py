@@ -26,8 +26,8 @@ def to_jsonable(value: Any) -> Any:
         return float(value)
     if isinstance(value, np.integer):
         return _intish(int(value))
-    if isinstance(value, bool):
-        return value
+    if isinstance(value, (np.bool_, bool)):
+        return bool(value)
     if isinstance(value, int):
         return _intish(value)
     if isinstance(value, dict):
