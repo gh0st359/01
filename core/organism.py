@@ -358,11 +358,11 @@ class OrganismV2:
         competence = float(1.0 / (1.0 + pe))
         self.homeo = step_homeo(
             self.homeo,
-            energy,
+            energy.detach(),
             pe_t.detach().reshape(1),
             torch.tensor([novelty], device=self.device),
-            social,
-            self_est.agency.mean().reshape(1),
+            social.detach(),
+            self_est.agency.mean().reshape(1).detach(),
             torch.tensor([competence], device=self.device),
         )
         self.competence_trace.append(competence)
@@ -594,6 +594,12 @@ class OrganismV2:
         self.last_action = self.last_action.detach()
         self.last_proprio = self.last_proprio.detach()
         self.prev = {k: (v.detach() if torch.is_tensor(v) else v) for k, v in self.prev.items()}
+        self.homeo = HomeoState(
+            *[getattr(self.homeo, n).detach() for n in (
+                "energy", "saturation", "novelty_dep", "pred_instability", "social",
+                "sleep", "competence", "control", "surprise", "valence",
+            )]
+        )
 
     def _replay_credit(self) -> None:
         """Replay stored episodes so later outcomes train earlier representations."""
@@ -671,7 +677,8 @@ class OrganismV2:
 
     def _plan(self, state: RSSMState, goal: Tensor, homeo: Tensor) -> Tensor:
         if "imagination" in self.disabled or "world_model" in self.disabled:
-            return torch.tanh(goal[:, : self.cfg.action_dim] if goal.size(-1) >= self.cfg.action_dim else torch.nn.functional.pad(goal, (0, self.cfg.action_dim - goal.size(-1))))
+            raw = goal[:, : self.cfg.action_dim] if goal.size(-1) >= self.cfg.action_dim else torch.nn.functional.pad(goal, (0, self.cfg.action_dim - goal.size(-1)))
+            return torch.tanh(raw).detach()
         # Replan when communicative/homeostatic pressure is high or plan exhausted
         need = self.plan_actions is None or self.tick % max(2, self.cfg.imag_horizon // 3) == 0
         if need:
