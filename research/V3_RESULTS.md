@@ -8,7 +8,7 @@ V2 left a working PyTorch substrate whose organs mostly lacked developmental pre
 
 | Field | Value |
 |---|---|
-| Branch | `cursor/organism-v3-developmental-pressure-399f` |
+| Commit | `6701bd5` on `cursor/organism-v3-developmental-pressure-399f` |
 | Hardware | Linux 6.12.94+ x86_64, 4 CPUs, 16 GB RAM |
 | Device | CPU (`torch 2.4.1+cpu`) |
 | CUDA | unavailable |
