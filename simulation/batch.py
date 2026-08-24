@@ -52,7 +52,9 @@ class ProceduralBatch:
         self.rng = np.random.default_rng(seed + (10_007 if held_out else 0))
         self.held_out = held_out
         self.extent = 8.0
+        self.attend = np.ones(batch, dtype=np.int64)
         self.state = self.reset()
+        self.retarget()
 
     def reset(self) -> BatchState:
         b, n = self.batch, self.n
@@ -171,12 +173,15 @@ class ProceduralBatch:
             py = int((rel[1] / fov + 1.0) * 0.5 * (h - 1))
             rad = max(1, int(s.radius[env, i] / fov * w * 0.8))
             col = np.clip(s.color[env, i] * (0.4 + 0.6 * s.light[env, i]), 0, 1)
+            halo = int(self.attend[env]) == i
             yy, xx = np.ogrid[-rad : rad + 1, -rad : rad + 1]
-            mask = xx * xx + yy * yy <= rad * rad
+            dist2 = xx * xx + yy * yy
+            mask = dist2 <= rad * rad
+            ring = dist2 >= max(1, (rad - 1) ** 2)
             for dy, dx in zip(*np.where(mask)):
                 y, x = py + dy - rad, px + dx - rad
                 if 0 <= y < h and 0 <= x < w:
-                    img[y, x] = col
+                    img[y, x] = np.array([0.95, 0.95, 0.2]) if halo and bool(ring[dy, dx]) else col
         return img
 
     def observation(self, env: int = 0) -> WorldObservation:
@@ -225,7 +230,12 @@ class ProceduralBatch:
             sensors=sensors,
             nearby_entity_count=int(self.n - 1),
             light_level=float(s.light[env, min(1, self.n - 1)]),
-            hidden_from_organism={"truth_pos": s.pos[env].tolist(), "kinds": s.kind[env].tolist()},
+            hidden_from_organism={
+                "truth_pos": s.pos[env].tolist(),
+                "kinds": s.kind[env].tolist(),
+                "attend": int(self.attend[env]),
+                "light": float(s.light[env, min(1, self.n - 1)]),
+            },
         )
 
     def public_view(self, env: int = 0) -> dict:
@@ -248,6 +258,25 @@ class ProceduralBatch:
 
     def inject_speech(self, _speaker: str, _text: str) -> None:
         return None
+
+    def retarget(self, env: int = 0) -> int:
+        choices = [i for i in range(1, self.n) if not self.state.hidden[env, i]]
+        if not choices:
+            choices = [1]
+        self.attend[env] = int(self.rng.choice(choices))
+        return int(self.attend[env])
+
+    def partner_stream(self, env: int = 0) -> str:
+        """Environment bytes bound to the attended appearance. Not an English lexicon."""
+        i = int(self.attend[env])
+        kind = int(self.state.kind[env, i])
+        c = self.state.color[env, i]
+        return f"{kind}{int(c[0] * 5)}{int(c[1] * 5)}"
+
+    def switch_distance(self, env: int = 0) -> float:
+        if self.n < 3:
+            return 99.0
+        return float(np.linalg.norm(self.state.pos[env, 0] - self.state.pos[env, 2]))
 
     def body(self, env: int = 0):
         class _B:

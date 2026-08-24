@@ -1,4 +1,8 @@
-"""Held-out behavioral evaluation. These tests can fail."""
+"""V2 operational suite. Behavioral claims for V3 live in training/v3_bench.py.
+
+Several checks here still pass if a tensor exists. Do not cite this suite as
+evidence that an organ learned. Use `python -m training.v3_bench`.
+"""
 
 from __future__ import annotations
 
@@ -95,7 +99,7 @@ def causal_intervention(org: OrganismV2) -> dict:
     r.motor.interact = 1.0
     world.step([r.motor])
     after = float(world.state.light[0, 1])
-    return {"name": "causal_intervention", "pass": True, "light_before": float(np.mean(lights)), "light_after": after}
+    return {"name": "causal_intervention", "pass": after != float(np.mean(lights)), "light_before": float(np.mean(lights)), "light_after": after}
 
 
 def delayed_memory(org: OrganismV2) -> dict:

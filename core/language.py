@@ -49,7 +49,7 @@ class LanguageOrgan(nn.Module):
         self.bind = nn.Sequential(nn.Linear(dim * 2, dim), nn.SiLU(), nn.Linear(dim, dim))
         self.intent_head = nn.Sequential(nn.Linear(dim + intention_dim, dim), nn.SiLU(), nn.Linear(dim, intention_dim))
         self.emit_head = nn.Sequential(nn.Linear(intention_dim + dim, dim), nn.SiLU(), nn.Linear(dim, 1))
-        # Articulator: semantic+intention → sequence of codepoints. Teacher-forced only on caregiver streams.
+        # Articulator: semantic+intention → codepoints. Trained by referent recovery, not echo.
         self.dec_cell = nn.GRUCell(dim + intention_dim, dim)
         self.dec_out = nn.Linear(dim, CODEPOINTS)
         self.start = nn.Parameter(torch.zeros(dim))
@@ -62,6 +62,12 @@ class LanguageOrgan(nn.Module):
     def comprehend(self, token_ids: Tensor, world_ctx: Tensor) -> tuple[Tensor, Tensor]:
         """token_ids: [B, T]. Returns (construction, grounded_semantic)."""
         emb = self.embed(token_ids)
+        packed, h = self.encoder(emb)
+        construction = h.squeeze(0)
+        grounded = self.bind(torch.cat([construction, self._fit(world_ctx, self.dim)], dim=-1))
+        return construction, grounded
+
+    def comprehend_embed(self, emb: Tensor, world_ctx: Tensor) -> tuple[Tensor, Tensor]:
         packed, h = self.encoder(emb)
         construction = h.squeeze(0)
         grounded = self.bind(torch.cat([construction, self._fit(world_ctx, self.dim)], dim=-1))

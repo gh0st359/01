@@ -40,9 +40,11 @@ class V2Config:
     checkpoint_every: int = 500
     consolidation_every: int = 64
     episodic_capacity: int = 8000
-    schema_version: int = 2
+    schema_version: int = 3
     data_dir: str = "data"
     run_dir: str = "runs"
+    bptt: int = 4
+    consolidate_every: int = 16
 
     def to_dict(self) -> dict:
         return asdict(self)

@@ -20,24 +20,22 @@ The loop continues while the runtime is up, including when nobody is speaking. H
 - Language is generated from communicative intent + grounded lexicon
 - Phenomenal consciousness is not claimed
 
-## Quick start (V2)
+## Quick start (V3)
+
+V3 keeps the V2 substrate and adds developmental pressure: every organ has a loss, credit is assigned across delayed outcomes, communication is a referential game, and the benchmark suite can fail.
 
 ```bash
 python3 -m pip install -r requirements.txt
-python -m training.birth --profile ci --seed 1 --run-dir runs/v2/newborn
-python -m training.develop --profile ci --seed 1 --run-dir runs/v2/newborn --steps 512
-python -m apps.organism_runtime.main --profile ci --seed 1 --run-dir runs/v2/newborn --hz 8
+python -m training.develop --profile ci --seed 1 --run-dir runs/v3/ind1 --steps 512
+python -m training.v3_bench --profile ci --seeds 1,2,3 --steps 80 --out research/evidence/v3/bench
+python -m apps.organism_runtime.main --profile ci --seed 1 --run-dir runs/v3/ind1 --hz 8
 ```
 
 Profiles: `ci`, `development_cpu`, `cloud_cpu`, `apple_mps`, `gpu_16gb`, `gpu_cloud`.
 
-```bash
-python -m training.evaluate --checkpoint runs/v2/newborn/checkpoints/latest
-python -m training.longitudinal --profile ci --cycles 3 --steps 16
-python -m training.ablate --profile ci --steps 24
-```
+The V2 operational suite (`training.evaluate`) still runs. Do not cite it as evidence that an organ learned. Use `training.v3_bench` and `research/V3_RESULTS.md`.
 
-See `research/V2_RESULTS.md` for measured results.
+See `research/V2_RESULTS.md` for the previous generation.
 
 Legacy gen-1 loop remains importable under `organism.loop.Organism`. The live runtime is `OrganismV2`.
 
